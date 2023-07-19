@@ -1,0 +1,29 @@
+lass Main {
+   public static int gcd(int p,int q){
+        if(q==0)
+        return p;
+        else
+        return gcd(q,p%q);
+        }
+    
+    public static void main(String[] args) {
+        int p=5,q=7;
+        int n=p*q;
+        int phi_n = (p-1)*(q-1);
+        int e,d=0;
+        for(e=2;e<phi_n;e++){
+            if(gcd(phi_n,e)==1)
+            break;
+        }
+       for(int k=1;k<=9;k++){
+           int x = (k*phi_n)+1;
+           if(x%e==0){
+               d=x/e;
+               break;
+           }
+       }
+            
+        System.out.println("e:"+e);
+        System.out.println("d:"+d);
+    }
+}
