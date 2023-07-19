@@ -1,0 +1,20 @@
+class Main {
+  public static void main(String[] args) {
+        int p= 17,q=3;
+        int a= 4;
+        int b= 3;
+        int A = (int)(Math.pow(q,a))%p;
+        int B =(int) (Math.pow(q,b))%p;
+        int k1= (int)(Math.pow(B,a))%p;
+        int k2 = (int)(Math.pow(A,b))%p;
+        if(k1==k2){
+            
+    
+        System.out.println("Secret key of A is "+k1);
+        System.out.println("Secret key of B is "+k2);
+        }
+        else{
+            System.out.println("public key");
+        }
+    }
+}
