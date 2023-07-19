@@ -1,0 +1,99 @@
+def toBinary(input):
+    binary=[]
+    for c in input:
+        val=ord(c)
+        binary_val=format(val,'08b')
+        binary.append(binary_val)
+    return (' '.join(binary))
+
+def initialPerm(binary_converted):
+    return binary_converted[::-1]
+
+def divide_left(initial_reverse):
+    lpt=initial_reverse[:8]
+    return lpt
+    
+def divide_right(initial_reverse):
+    rpt=initial_reverse[9:]
+    return rpt
+    
+def convert(right):
+    bits=list(right)
+    b1=bits[:4]
+    b2=bits[4:]
+    b1.append(b2[0])
+    b2.insert(0,b1[-1])
+    b1.insert(0,b2[-1])
+    b2.append(b1[0])
+    manipulated_bits=''.join(b1+b2)
+    return manipulated_bits
+    
+def xor_rpt_key(conversion_12,key):
+    num1=int(conversion_12,2)
+    num2=int(key,2)
+    result=num1 ^ num2
+    result_binary=format(result,'012b')
+    return result_binary
+
+def s_box_conversion(xor_key):
+    s_box = [
+        ['1111','1110','1101','1100','1011','1010','1001','1000','0111','0110','0101','0100','0011','0010','0001','0000'],
+        ['1010','1011','1000','1001','1110','1111','1100','1101','0110','0011','0000','0001','0110','0111','0100','0101'],
+        ['0101','0100','0111','0110','0001','0000','0011','0010','1101','1100','1111','1110','1001','1000','1011','1010'],
+        ['0000','0001','0010','0011','0100','0101','0111','1000','1001','1010','1011','1100','1101','1110','1111']
+    ]
+    row = int(substitution[0], 2)
+    col = int(substitution[1:], 2)
+    return s_box[row][col]
+
+def p_box_permutation(substituted_data):
+  return substituted_data[1] + substituted_data[0] + substituted_data[3] + substituted_data[2]
+
+def swap_lpt_rpt(lpt, rpt):
+    return rpt, lpt
+
+def final_permutation(data):
+    return data[::-1]
+
+def generate_signature(data):
+    return bin(int(data, 2) >> 3)[2:].zfill(16)
+    
+
+
+input='Hi'
+key='101011010110'
+print('Plain text: ',input)
+binary_converted=toBinary(input)
+print('Binary conversion: ',binary_converted)
+
+initial_reverse=initialPerm(binary_converted)
+print('Initial reverse: ',initial_reverse)
+
+left=divide_left(initial_reverse)
+print('Left plain text: ',left)
+
+right=divide_right(initial_reverse)
+print('Right plain text: ',right)
+print('Conversion to 12 bits, XOR with key, S-box substitution, P-box permutation, Right and left swap of 4 rounds: ')
+for _ in range(4):
+ conversion_12=convert(right)
+ print(conversion_12)
+
+ xor_key=xor_rpt_key(conversion_12,key)
+ print(xor_key)
+ 
+ substituted_data = ''
+ for i in range(0, len(xor_key), 4):
+            substitution = xor_key[i:i+4]
+            substituted_data += s_box_conversion(substitution)
+ print(substituted_data)
+
+ permuted_data = p_box_permutation(substituted_data)
+ print(permuted_data)
+
+ right, left = swap_lpt_rpt(xor_rpt_key(permuted_data, left), right)
+
+ encrypted_message = final_permutation(left + right)
+ digital_signature = generate_signature(encrypted_message)
+print('Encrypted message: ',encrypted_message) 
+print('Digital signature: ',digital_signature)
