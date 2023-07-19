@@ -1,0 +1,96 @@
+def initial_permutation(data):
+    return data[::-1]
+
+# Divide 16-bit block into two parts (Step 2)
+def divide_block(data):
+    lpt = data[:8]
+    rpt = data[8:]
+    return lpt, rpt
+
+# Convert 16-bit key to 12-bit key (Step 3)
+def convert_key(key):
+    return key[:12]
+
+# Apply S-Box substitutions (Step 6)
+def s_box_substitution(data):
+    s_box_table = [
+        ['1010', '0000', '1010', '0000'],
+        ['0110', '0001', '0110', '0001'],
+        ['1001', '1111', '1001', '1111'],
+        ['0011', '1000', '0011', '1000'],
+        ['1100', '0111', '1100', '0111'],
+        ['0101', '1011', '0101', '1011'],
+        ['1101', '0100', '1101', '0100'],
+        ['1001', '0010', '1001', '0010']
+    ]
+    
+    row = int(data[0] + data[3], 2)
+    col = int(data[1] + data[2], 2)
+    return s_box_table[row][col]
+
+# P-Box Permutation (Step 7)
+def p_box_permutation(data):
+    return data[1] + data[0]
+
+# Perform XOR operation (Step 5)
+def xor_operation(data, key):
+    return bin(int(data, 2) ^ int(key, 2))[2:].zfill(len(data))
+
+# Final Permutation (Step 9)
+def final_permutation(data):
+    return data[::-1]
+
+# Modified DES algorithm
+def modified_des_algorithm(message, key):
+    # Initial Permutation (Step 1)
+    message = initial_permutation(message)
+
+    # Divide 16-bit block into two parts (Step 2)
+    lpt, rpt = divide_block(message)
+
+    # Convert 16-bit key to 12-bit key (Step 3)
+    key = convert_key(key)
+
+    # Apply 4 rounds (Steps 4-8)
+    for _ in range(4):
+        # Convert 8-bit RPT to 12-bit data (Step 4)
+        rpt = convert_key(rpt)
+
+        # XOR operation between RPT and key (Step 5)
+        xor_result = xor_operation(rpt, key)
+
+        # Apply S-Box substitutions (Step 6)
+        s_box_result = s_box_substitution(xor_result)
+
+        # P-Box Permutation (Step 7)
+        p_box_result = p_box_permutation(s_box_result)
+
+        # XOR operation between RPT and LPT (Step 8)
+        xor_result = xor_operation(p_box_result, lpt)
+
+        # Swap LPT and RPT
+        lpt, rpt = rpt, xor_result
+
+    # Final Permutation (Step 9)
+    ciphertext = final_permutation(rpt + lpt)
+
+    return ciphertext
+
+# Generate digital signature using hash function MD = f(y) = x>>2
+def generate_digital_signature(data):
+    return bin(int(data, 2) >> 2)[2:].zfill(len(data))
+
+# Generate public and private keys using hash function f(y) = x>>3
+def generate_keys(data):
+    return bin(int(data, 2) >> 3)[2:].zfill(len(data))
+
+# Example usage
+message = '0100100001101001'  # "Hi" in binary
+key = '1010110111010011'  # 16-bit key
+ciphertext = modified_des_algorithm(message, key)
+digital_signature = generate_digital_signature(ciphertext)
+public_key = generate_keys(digital_signature)
+
+print('Ciphertext:', ciphertext)
+print('Digital Signature:', digital_signature)
+print('Public Key:', public_key)
