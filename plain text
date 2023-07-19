@@ -1,0 +1,23 @@
+class Main {
+    public static void main(String[] args){
+           String c="qyyn wybxsxq dy kvv";
+           String p=" ";
+           for(int j=0;j<26;j++){
+           for(int i=0;i<c.length();i++){
+               
+               if(Character.isLowerCase(c.charAt(i))){
+                   char x = (char)((26+(int)c.charAt(i)-j-97)%26+97);
+                   p=p+x;
+               }
+               else{
+                   char x = (char)((int)c.charAt(i));
+                   p=p+x;
+               }}
+               //return p;
+           
+           System.out.println("key = "+(char)(j+97)+" value is = "+p);
+           p="";
+       }
+       System.out.println();
+           }
+}
