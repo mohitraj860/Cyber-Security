@@ -1,0 +1,25 @@
+def read_file(f1):
+
+  f1="/data.txt"
+  f2="/malicious.txt"
+  ips=[]
+  ports=[]
+  with open('f2.txt') as f:
+    f1_new=f1.read(f,delimiter="\t")
+    print(f1_new)
+    for x in f1_new:
+      ips.append[x['IP_address']]
+      ports.append[x['Port']]
+
+  mal=False
+  with open('f1.txt','r') as f:
+    st=str(f.read())
+  for ip,port_protocol in zip(ips,ports):
+    port_no=port_protocol.split('/')[0]
+    if st.find(ip)!=-1 and st.find(port_no)!=-1:
+      print('Not accepted')
+      mal=True
+      break
+    if mal==False:
+      print('Accepted')
+
